@@ -38,7 +38,11 @@ export default defineConfig({
                         './building.js',
                         './cube.js'
                     ]
-                }
+                },
+                format: 'es',
+                entryFileNames: 'assets/[name]-[hash].js',
+                chunkFileNames: 'assets/[name]-[hash].js',
+                assetFileNames: 'assets/[name]-[hash].[ext]'
             }
         }
     },
@@ -50,5 +54,8 @@ export default defineConfig({
     publicDir: 'public',
     assetsInclude: ['**/*.glb', '**/*.gltf', '**/*.fbx', '**/*.obj', '**/*.mtl', '**/*.png', '**/*.jpg', '**/*.jpeg'],
     base: './',
-    copyPublicDir: true
+    copyPublicDir: true,
+    optimizeDeps: {
+        include: ['three']
+    }
 }); 
