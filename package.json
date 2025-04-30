@@ -1,0 +1,22 @@
+{
+  "name": "3d",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "vite": "^5.4.6",
+    "wrangler": "^3.0.0"
+  },
+  "dependencies": {
+    "three": "^0.176.0",
+    "ws": "^8.16.0"
+  }
+}

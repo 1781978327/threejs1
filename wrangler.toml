@@ -1,0 +1,13 @@
+name = "3d-game"
+main = "_worker.js"
+compatibility_date = "2024-04-28"
+
+[site]
+bucket = "./dist"
+
+[build]
+command = "npm run build"
+cwd = "./"
+
+[env.production]
+workers_dev = true 
