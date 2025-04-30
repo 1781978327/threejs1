@@ -13,31 +13,23 @@ export default defineConfig({
         minify: 'terser',
         terserOptions: {
             compress: {
-                drop_console: true,
+                drop_console: false,
                 drop_debugger: true
             }
         },
         rollupOptions: {
             output: {
-                manualChunks: {
-                    'three': ['three'],
-                    'vendor': [
-                        'ws'
-                    ],
-                    'game-core': [
-                        './main.js',
-                        './scene.js',
-                        './character.js',
-                        './camera.js',
-                        './controls.js'
-                    ],
-                    'game-objects': [
-                        './enemy.js',
-                        './grenade.js',
-                        './bullet.js',
-                        './building.js',
-                        './cube.js'
-                    ]
+                manualChunks: (id) => {
+                    if (id.includes('node_modules/three')) {
+                        return 'three';
+                    }
+                    if (id.includes('node_modules/ws')) {
+                        return 'vendor';
+                    }
+                    // 将所有游戏相关模块打包在一起
+                    if (id.includes('.js')) {
+                        return 'game';
+                    }
                 },
                 format: 'es',
                 entryFileNames: 'assets/[name]-[hash].js',
@@ -56,6 +48,12 @@ export default defineConfig({
     base: './',
     copyPublicDir: true,
     optimizeDeps: {
-        include: ['three']
+        include: ['three'],
+        exclude: ['enemy.js', 'building.js', 'bullet.js', 'grenade.js', 'cube.js']
+    },
+    preview: {
+        port: 4173,
+        strictPort: true,
+        host: true
     }
 }); 

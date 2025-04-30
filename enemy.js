@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { CSS3DObject } from 'three/examples/jsm/renderers/CSS3DRenderer.js';
 import Base from './base.js';
+
+// 移除延迟导入，改为直接导入
 import { BuildingManager } from './building.js';
 
 class Enemy extends Base {
@@ -22,6 +24,7 @@ class Enemy extends Base {
         this.directionChangeInterval = 8 + Math.random() * 7;
         this.isInitialized = false;
         this.initPromise = null;
+        this.buildingManager = null;
         
         // 添加血条相关属性
         this.maxHealth = 100;
@@ -63,7 +66,7 @@ class Enemy extends Base {
     }
 
     // 设置建筑物管理器
-    setBuildingManager(manager) {
+    async setBuildingManager(manager) {
         this.buildingManager = manager;
         console.log('已设置建筑物管理器');
     }
@@ -521,4 +524,4 @@ class Enemy extends Base {
     }
 }
 
-export default Enemy; 
+export { Enemy }; 

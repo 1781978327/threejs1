@@ -4,7 +4,7 @@ import Cube from './cube.js';
 import { BuildingManager } from './building.js';
 import Controls from './controls.js';
 import Character from './character.js';
-import Enemy from './enemy.js';
+import { Enemy } from './enemy.js';
 import Grenade from './grenade.js';
 import Bullet from './bullet.js';
 import { CSS3DRenderer } from 'three/examples/jsm/renderers/CSS3DRenderer.js';
