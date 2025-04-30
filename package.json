@@ -12,8 +12,9 @@
     "deploy": "wrangler deploy"
   },
   "devDependencies": {
+    "terser": "^5.39.0",
     "vite": "^5.4.6",
-    "wrangler": "^3.0.0"
+    "wrangler": "^4.14.0"
   },
   "dependencies": {
     "three": "^0.176.0",

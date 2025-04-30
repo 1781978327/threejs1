@@ -8,7 +8,39 @@ export default defineConfig({
     build: {
         outDir: 'dist',
         assetsDir: 'assets',
-        emptyOutDir: true
+        emptyOutDir: true,
+        chunkSizeWarningLimit: 1000,
+        minify: 'terser',
+        terserOptions: {
+            compress: {
+                drop_console: true,
+                drop_debugger: true
+            }
+        },
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    'three': ['three'],
+                    'vendor': [
+                        'ws'
+                    ],
+                    'game-core': [
+                        './main.js',
+                        './scene.js',
+                        './character.js',
+                        './camera.js',
+                        './controls.js'
+                    ],
+                    'game-objects': [
+                        './enemy.js',
+                        './grenade.js',
+                        './bullet.js',
+                        './building.js',
+                        './cube.js'
+                    ]
+                }
+            }
+        }
     },
     resolve: {
         alias: {
@@ -17,5 +49,5 @@ export default defineConfig({
     },
     publicDir: 'public',
     assetsInclude: ['**/*.glb', '**/*.gltf', '**/*.fbx', '**/*.obj', '**/*.mtl', '**/*.png', '**/*.jpg', '**/*.jpeg'],
-    base: '/'
+    base: './'
 }); 
