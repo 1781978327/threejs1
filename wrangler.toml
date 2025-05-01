@@ -4,13 +4,17 @@ compatibility_date = "2024-04-28"
 
 [site]
 bucket = "./dist"
+entry-point = "workers-site"
 
 [build]
 command = "npm run build"
+publish = "dist"
 cwd = "./"
 
 [env.production]
 workers_dev = true
+route = ""
+zone_id = ""
 
 [build.upload]
 format = "service-worker"

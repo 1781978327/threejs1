@@ -45,7 +45,7 @@ export default defineConfig({
     },
     publicDir: 'public',
     assetsInclude: ['**/*.glb', '**/*.gltf', '**/*.fbx', '**/*.obj', '**/*.mtl', '**/*.png', '**/*.jpg', '**/*.jpeg'],
-    base: './',
+    base: '/',
     copyPublicDir: true,
     optimizeDeps: {
         include: ['three'],
