@@ -50,7 +50,7 @@ export default defineConfig({
         '**/*.woff', '**/*.woff2', '**/*.ttf', '**/*.otf',
         '**/*.mp4', '**/*.webm', '**/*.ogg', '**/*.mp3', '**/*.wav'
     ],
-    base: '/',
+    base: './',
     copyPublicDir: true,
     optimizeDeps: {
         include: ['three'],

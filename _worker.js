@@ -68,7 +68,10 @@ export default {
           });
         }
 
+        // 设置正确的 Content-Type
+        const contentType = getContentType(url.pathname);
         const newResponse = new Response(response.body, response);
+        newResponse.headers.set('Content-Type', contentType);
         newResponse.headers.set('Access-Control-Allow-Origin', '*');
         return newResponse;
       } catch (error) {
@@ -89,4 +92,26 @@ export default {
       });
     }
   }
-}; 
+};
+
+// 根据文件扩展名获取 Content-Type
+function getContentType(pathname) {
+  const ext = pathname.split('.').pop().toLowerCase();
+  const contentTypes = {
+    'png': 'image/png',
+    'jpg': 'image/jpeg',
+    'jpeg': 'image/jpeg',
+    'gif': 'image/gif',
+    'webp': 'image/webp',
+    'glb': 'model/gltf-binary',
+    'gltf': 'model/gltf+json',
+    'obj': 'model/obj',
+    'mtl': 'model/mtl',
+    'json': 'application/json',
+    'js': 'application/javascript',
+    'css': 'text/css',
+    'html': 'text/html',
+    'txt': 'text/plain'
+  };
+  return contentTypes[ext] || 'application/octet-stream';
+} 
