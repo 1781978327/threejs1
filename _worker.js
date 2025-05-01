@@ -2,6 +2,7 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     console.log('请求URL:', url.pathname);
+    console.log('完整URL:', url.toString());
 
     // 添加CORS头
     const corsHeaders = {
@@ -20,14 +21,21 @@ export default {
 
     try {
       // 处理静态文件请求
+      console.log('尝试获取资源:', url.pathname);
       const response = await env.ASSETS.fetch(request);
       
       if (!response) {
-        return new Response('Not Found', { status: 404 });
+        console.log('资源未找到:', url.pathname);
+        return new Response('Not Found', { 
+          status: 404,
+          headers: corsHeaders
+        });
       }
 
       // 设置正确的Content-Type
       const contentType = getContentType(url.pathname);
+      console.log('资源类型:', contentType);
+      
       const headers = new Headers(response.headers);
       headers.set('Content-Type', contentType);
       headers.set('Cache-Control', 'public, max-age=31536000');
@@ -37,13 +45,17 @@ export default {
         headers.set(key, value);
       });
 
+      console.log('返回资源:', url.pathname);
       return new Response(response.body, {
         status: response.status,
         headers
       });
     } catch (error) {
-      console.error('Error:', error);
-      return new Response('Internal Server Error', { status: 500 });
+      console.error('错误:', error);
+      return new Response('Internal Server Error', { 
+        status: 500,
+        headers: corsHeaders
+      });
     }
   }
 };
