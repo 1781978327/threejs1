@@ -73,6 +73,7 @@ export default {
         const newResponse = new Response(response.body, response);
         newResponse.headers.set('Content-Type', contentType);
         newResponse.headers.set('Access-Control-Allow-Origin', '*');
+        newResponse.headers.set('Cache-Control', 'public, max-age=31536000');
         return newResponse;
       } catch (error) {
         console.error('Static file error:', error);
