@@ -44,7 +44,12 @@ export default defineConfig({
         }
     },
     publicDir: 'public',
-    assetsInclude: ['**/*.glb', '**/*.gltf', '**/*.fbx', '**/*.obj', '**/*.mtl', '**/*.png', '**/*.jpg', '**/*.jpeg'],
+    assetsInclude: [
+        '**/*.glb', '**/*.gltf', '**/*.fbx', '**/*.obj', '**/*.mtl',
+        '**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.gif', '**/*.webp',
+        '**/*.woff', '**/*.woff2', '**/*.ttf', '**/*.otf',
+        '**/*.mp4', '**/*.webm', '**/*.ogg', '**/*.mp3', '**/*.wav'
+    ],
     base: '/',
     copyPublicDir: true,
     optimizeDeps: {
