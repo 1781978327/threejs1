@@ -1,118 +1,76 @@
 export default {
-  async fetch(request, env, ctx) {
-    try {
-      const url = new URL(request.url);
-      console.log('Request URL:', url.toString());
-      
-      // 添加 CORS 头
-      const corsHeaders = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type',
-      };
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    console.log('请求URL:', url.pathname);
 
-      // 处理 OPTIONS 请求
-      if (request.method === 'OPTIONS') {
-        return new Response(null, {
-          headers: corsHeaders,
-          status: 204
-        });
-      }
+    // 添加CORS头
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, HEAD, POST, OPTIONS',
+      'Access-Control-Allow-Headers': '*',
+    };
 
-      // 处理 WebSocket 连接
-      if (request.headers.get('Upgrade') === 'websocket') {
-        try {
-          const { 0: client, 1: server } = new WebSocketPair();
-          
-          server.accept();
-          server.addEventListener('message', (event) => {
-            try {
-              const message = event.data;
-              server.send(JSON.stringify({ type: 'response', data: message }));
-            } catch (error) {
-              console.error('WebSocket message error:', error);
-            }
-          });
-          
-          return new Response(null, {
-            status: 101,
-            webSocket: client,
-          });
-        } catch (error) {
-          console.error('WebSocket error:', error);
-          return new Response('WebSocket error', { status: 500 });
-        }
-      }
-      
-      // 处理 API 请求
-      if (url.pathname.startsWith('/api/')) {
-        return new Response(JSON.stringify({ message: 'API endpoint' }), {
-          headers: {
-            'Content-Type': 'application/json',
-            ...corsHeaders
-          },
-          status: 200
-        });
-      }
-      
-      // 处理静态文件请求
-      try {
-        console.log('Fetching static file:', url.pathname);
-        const response = await env.ASSETS.fetch(request);
-        
-        if (!response) {
-          console.error('No response from ASSETS.fetch');
-          return new Response('Not Found', { 
-            status: 404,
-            headers: corsHeaders
-          });
-        }
-
-        // 设置正确的 Content-Type
-        const contentType = getContentType(url.pathname);
-        const newResponse = new Response(response.body, response);
-        newResponse.headers.set('Content-Type', contentType);
-        newResponse.headers.set('Access-Control-Allow-Origin', '*');
-        newResponse.headers.set('Cache-Control', 'public, max-age=31536000');
-        return newResponse;
-      } catch (error) {
-        console.error('Static file error:', error);
-        return new Response('Not Found', { 
-          status: 404,
-          headers: corsHeaders
-        });
-      }
-    } catch (error) {
-      console.error('Worker error:', error);
-      return new Response('Internal Server Error', { 
-        status: 500,
-        headers: {
-          'Content-Type': 'text/plain',
-          'Access-Control-Allow-Origin': '*'
-        }
+    // 处理OPTIONS请求
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        status: 204,
+        headers: corsHeaders
       });
+    }
+
+    try {
+      // 处理静态文件请求
+      const response = await env.ASSETS.fetch(request);
+      
+      if (!response) {
+        return new Response('Not Found', { status: 404 });
+      }
+
+      // 设置正确的Content-Type
+      const contentType = getContentType(url.pathname);
+      const headers = new Headers(response.headers);
+      headers.set('Content-Type', contentType);
+      headers.set('Cache-Control', 'public, max-age=31536000');
+      
+      // 添加CORS头
+      Object.entries(corsHeaders).forEach(([key, value]) => {
+        headers.set(key, value);
+      });
+
+      return new Response(response.body, {
+        status: response.status,
+        headers
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      return new Response('Internal Server Error', { status: 500 });
     }
   }
 };
 
-// 根据文件扩展名获取 Content-Type
+// 根据文件扩展名获取Content-Type
 function getContentType(pathname) {
   const ext = pathname.split('.').pop().toLowerCase();
-  const contentTypes = {
+  const types = {
+    'html': 'text/html',
+    'js': 'application/javascript',
+    'css': 'text/css',
+    'json': 'application/json',
     'png': 'image/png',
     'jpg': 'image/jpeg',
     'jpeg': 'image/jpeg',
     'gif': 'image/gif',
-    'webp': 'image/webp',
+    'svg': 'image/svg+xml',
+    'ico': 'image/x-icon',
     'glb': 'model/gltf-binary',
     'gltf': 'model/gltf+json',
-    'obj': 'model/obj',
-    'mtl': 'model/mtl',
-    'json': 'application/json',
-    'js': 'application/javascript',
-    'css': 'text/css',
-    'html': 'text/html',
-    'txt': 'text/plain'
+    'fbx': 'application/octet-stream',
+    'obj': 'text/plain',
+    'mp4': 'video/mp4',
+    'webm': 'video/webm',
+    'ogg': 'audio/ogg',
+    'mp3': 'audio/mpeg',
+    'wav': 'audio/wav'
   };
-  return contentTypes[ext] || 'application/octet-stream';
+  return types[ext] || 'application/octet-stream';
 } 

@@ -3,7 +3,8 @@ import { resolve } from 'path';
 
 export default defineConfig({
     server: {
-        port: 3000
+        port: 3000,
+        open: true
     },
     build: {
         outDir: 'dist',
@@ -19,17 +20,9 @@ export default defineConfig({
         },
         rollupOptions: {
             output: {
-                manualChunks: (id) => {
-                    if (id.includes('node_modules/three')) {
-                        return 'three';
-                    }
-                    if (id.includes('node_modules/ws')) {
-                        return 'vendor';
-                    }
-                    // 将所有游戏相关模块打包在一起
-                    if (id.includes('.js')) {
-                        return 'game';
-                    }
+                manualChunks: {
+                    'three': ['three'],
+                    'ws': ['ws']
                 },
                 format: 'es',
                 entryFileNames: 'assets/[name]-[hash].js',
@@ -53,8 +46,8 @@ export default defineConfig({
     base: '',
     copyPublicDir: true,
     optimizeDeps: {
-        include: ['three'],
-        exclude: ['enemy.js', 'building.js', 'bullet.js', 'grenade.js', 'cube.js']
+        include: ['three', 'ws'],
+        exclude: ['@tweenjs/tween.js']
     },
     preview: {
         port: 4173,
